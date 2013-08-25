@@ -149,7 +149,7 @@ var Game = function(context, config) {
     var _currentItem = {};  // current teris item
     var _lines = HEIGHT / _rectLength + 1;      // lines
     var _rows = WIDTH / _rectLength;            // rows
-    var _centerLeft = parseInt(_lines / 2) - 2; // center of the top, the new items will appear here
+    var _centerLeft = parseInt(_rows / 2) - 1; // center of the top, the new items will appear here
 
     var _init = function() {
         _items = [];
