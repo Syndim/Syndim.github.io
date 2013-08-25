@@ -1,10 +1,45 @@
 <!DOCTYPE HTML>
-<html lang="zh-CN">
-<head>
-	<meta charset="UTF-8">
-	<title>Syndim's HomePage</title>
-</head>
-<body>
-    Are you the missing cat?
-</body>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title>Syndim's HomePage</title>
+        <meta name="description" content="简单的事情也能让人着迷。" />
+        <link rel="shortcut icon" href="head.png" type="image/x-icon" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body onload="onLoad()">
+        <div id="head">
+            <img src="head.png" alt="" /> 
+            <span>Syndim's HomePage</span>
+        </div>
+        <div id="game_container">
+            <canvas id="game" width="480px" height="600px"></canvas>
+            <div id="text">
+                <br />
+                <div class="instruction">
+                    得分：<span id="score">0</span>
+                </div>
+                <div class="instruction">
+                    <h3>操作说明</h3>
+                    <span>W: 旋转</span>
+                    <br />
+                    <span>S: 快速下落</span>
+                    <br />
+                    <span>A: 左移</span>
+                    <br />
+                    <span>D: 右移</span>
+                    <br />
+                </div>
+                <br />
+                <div class="center">
+                    <button id="start" type="button" onclick="gameStart()">Start!</button>
+                </div>
+                <br />
+                <div class="center">
+                    <span><a href="http://blog.syndim.org" target="_blank">访问博客</a></span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="game.js"></script>
+    </body>
 </html>

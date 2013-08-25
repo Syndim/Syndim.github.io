@@ -1,0 +1,63 @@
+body {
+    margin-top: 0;
+}
+
+div {
+    color: #fff;
+}
+
+#container {
+    min-width: 600px;
+}
+
+.instruction {
+    padding: 1px 5px;
+}
+
+#game_container {
+    width: 600px;
+    height: 600px;
+    background-color: #003371;
+    margin: 0 auto;
+}
+
+#game {
+    background-image: url(bg.jpg);
+    float:left;
+}
+
+#text {
+    width: 120px;
+    height: 600px;
+    word-wrap: break-word;
+    float: left;
+}
+
+.center {
+    text-align: center;
+}
+
+span {
+    font-size: 14px;
+}
+
+#head {
+    width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#head span {
+    color: #000;
+    font-size: 30px;
+    vertical-align: middle;
+}
+
+#head img {
+    width: 35px;
+    vertical-align: middle;
+}
+
+span a {
+    color: #FFF;
+}
