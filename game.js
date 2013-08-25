@@ -4,8 +4,8 @@ var DEFAULT_BORDER = "#FFF";
 var NORMAL_SPEED = 400;
 var FAST_SPEED = 50;
 
-var WIDTH = 480;
-var HEIGHT = 600;
+var WIDTH = 360;
+var HEIGHT = 552;
 
 // Rectangle class, for drawing rectangles
 var RectItem = function(context, config) {
@@ -393,16 +393,20 @@ var Game = function(context, config) {
         keyCode = evt.charCode || evt.keyCode;
         _removeItemFromStage();
         switch ( keyCode ) {
-            case 65 :
+            case 65:
+            case 37:
                 _moveLeft();
                 break;
             case 68:
+            case 39:
                 _moveRight();
                 break;
             case 87:
+            case 38:
                 _rotate();
                 break;
             case 83:
+            case 40:
                 if ( !_isFast ) {
                     _isFast = true;
                     _changeSpeed(FAST_SPEED);
@@ -417,7 +421,7 @@ var Game = function(context, config) {
     var _onKeyUp = function(evt) {
         evt = evt || window.event;
         keyCode = evt.charCode || evt.keyCode;
-        if ( keyCode == 83 ) {
+        if ( keyCode == 83 || keyCode == 40 ) {
             _changeSpeed(NORMAL_SPEED);
             _isFast = false;
         }

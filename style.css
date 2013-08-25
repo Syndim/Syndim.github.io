@@ -7,7 +7,7 @@ div {
 }
 
 #container {
-    min-width: 600px;
+    min-width: 480px;
 }
 
 .instruction {
@@ -15,8 +15,8 @@ div {
 }
 
 #game_container {
-    width: 600px;
-    height: 600px;
+    width: 480px;
+    height: 552px;
     background-color: #003371;
     margin: 0 auto;
 }
@@ -28,7 +28,7 @@ div {
 
 #text {
     width: 120px;
-    height: 600px;
+    height: 552px;
     word-wrap: break-word;
     float: left;
 }
