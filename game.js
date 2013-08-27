@@ -6,6 +6,8 @@ var FAST_SPEED = 50;
 
 var WIDTH = 360;
 var HEIGHT = 552;
+var NEXT_WIDTH = 96;
+var NEXT_HEIGHT = 96;
 
 // Rectangle class, for drawing rectangles
 var RectItem = function(context, config) {
@@ -46,12 +48,13 @@ var RectItem = function(context, config) {
     };
 
     // draw rectangles by matrix
-    var _refreshCanvas = function(rectItems, styles) {
+    var _refreshCanvas = function(rectItems, styles, offset) {
+        offset = offset || 0;
         _clear();
         if ( !rectItems || !rectItems.length ) {
             return ;
         }
-        var currentTopLeft = [0, -_rectLength];
+        var currentTopLeft = [0, offset * _rectLength];
         for ( var i = 0; i < rectItems.length; i++ ) {
             if ( !rectItems[i].length ) {
                 return ;
@@ -121,7 +124,7 @@ var TerisItem = function(config) {
 
     // generate random items
     var _getRandomItem = function(topLeft) {
-        var selected = parseInt(Math.random() * 7);
+        var selected = Math.floor(Math.random() * 7);
         var item = _items[selected];
         
         return item;
@@ -131,15 +134,17 @@ var TerisItem = function(config) {
 };
 
 // Main game class
-var Game = function(context, config) {
-    if ( !context ) {
+var Game = function(gameContext, nextContext, config) {
+    if ( !gameContext || !nextContext ) {
         return;
     }
     var _items = [];        // the whole stage
+    var _nextItems = [];
     var _styles = [];       // not used now
     var _rectLength = config && config.rectLength || RECT_LENGTH;
     var _terisItem = new TerisItem(config);
-    var _rectItem = new RectItem(context, config);
+    var _mainStage = new RectItem(gameContext, config);
+    var _nextStage = new RectItem(nextContext, config);
     var _mainLoop;          // main loop obj
     var _score = 0;         // score
     var _isFast = false;    // is in fast fall down now
@@ -147,14 +152,19 @@ var Game = function(context, config) {
     var _gameOverCallback;
 
     var _currentItem = {};  // current teris item
+    var _nextItem = {};
     var _lines = HEIGHT / _rectLength + 1;      // lines
+    var _nextLines = NEXT_HEIGHT / _rectLength;
+    var _nextRows = NEXT_WIDTH / _rectLength;
     var _rows = WIDTH / _rectLength;            // rows
     var _centerLeft = parseInt(_rows / 2) - 1; // center of the top, the new items will appear here
 
     var _init = function() {
         _items = [];
+        _nextItems = [];
         _sytles = [];
         _currentItem = {};
+        _nextItem = {};
         // initialize the main stage
         for ( var i = 0; i < _lines; i++ ) {
             _items.push([]);
@@ -164,9 +174,29 @@ var Game = function(context, config) {
                 _styles[i].push(0);
             }
         }
+
+        for ( var i = 0; i < _nextLines; i++ ) {
+            _nextItems.push([]);
+            for ( var j = 0; j < _nextRows; j++ ) {
+                _nextItems[i].push(0);
+            }
+        }
         // refresh the stage
-        _rectItem.refreshCanvas(_items, _styles);
+        _mainStage.refreshCanvas(_items, _styles, -1);
         
+    };
+
+    var _rotateNext = function() {
+        var newItem = [];
+        var height = _nextItem.length;
+        var width = _nextItem[0].length;
+        for ( var i = 0; i < width; i++ ) {
+            newItem.push([]);
+            for ( var j = 0; j < height; j++ ) {
+                newItem[i].push(_nextItem[height-j-1][i]);
+            }
+        }
+        _nextItem = newItem;
     };
 
     // rotate
@@ -178,12 +208,7 @@ var Game = function(context, config) {
         for ( var i = 0; i < width; i++ ) {
             newItem.push([]);
             for ( var j = 0; j < height; j++ ) {
-                if ( height > width ) {
-                    newItem[i].push(_currentItem.item[height-j-1][i]);
-                }
-                else {
-                    newItem[i].push(_currentItem.item[height-j-1][i]);
-                }
+                newItem[i].push(_currentItem.item[height-j-1][i]);
             }
         }
         var tempItem  = _currentItem.item;
@@ -216,6 +241,22 @@ var Game = function(context, config) {
         
         _putItemToStage(true);
         
+    };
+
+    var _putNextItemToBox = function() {
+        for ( var i = 0; i < _nextLines; i++ ) {
+            for ( var j = 0; j < _nextRows; j++ ) {
+                _nextItems[i][j] = 0;
+            }
+        }
+        var left = Math.floor((_nextLines - _nextItem.length) / 2);
+        var top = Math.floor((_nextRows - _nextItem[0].length) / 2);
+        for ( var i = 0; i < _nextItem.length; i++ ) {
+            for ( var j = 0; j < _nextItem[0].length; j++ ) {
+                _nextItems[j+top][i+left] = _nextItem[i][j];
+            }
+        }
+
     };
 
     // add/remove item to stage or determine whether it can be added to stage
@@ -263,11 +304,17 @@ var Game = function(context, config) {
     var _newItem = function() {
         
         if ( !_isFull() ) {
-            _currentItem.item = _terisItem.getRandomItem();
+            _currentItem.item = _nextItem || _terisItem.getRandomItem();
             _currentItem.x = _centerLeft;
             _currentItem.y = 0;
             _putItemToStage();
-            _rectItem.refreshCanvas(_items);
+            _nextItem = _terisItem.getRandomItem();
+            for ( var i = 0; i < Math.floor(Math.random() * 4); i++ ) {
+                _rotateNext();
+            }
+            _putNextItemToBox();
+            _mainStage.refreshCanvas(_items, null, -1);
+            _nextStage.refreshCanvas(_nextItems);
         }
         else {
             _gameOverCallback();
@@ -414,7 +461,7 @@ var Game = function(context, config) {
            
         }
         _putItemToStage();
-        _rectItem.refreshCanvas(_items);
+        _mainStage.refreshCanvas(_items, null, -1);
     };
 
     // monitor the key up event
@@ -459,7 +506,7 @@ var Game = function(context, config) {
             _newItem();
         }
         finally {
-            _rectItem.refreshCanvas(_items);
+            _mainStage.refreshCanvas(_items, null, -1);
         }
     }
 
@@ -499,5 +546,5 @@ function gameover() {
 }
 
 function onLoad() {
-    game = new Game(document.getElementById('game').getContext('2d'));
+    game = new Game(document.getElementById('game').getContext('2d'), document.getElementById('next').getContext('2d'));
 }
