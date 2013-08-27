@@ -26,6 +26,15 @@ div {
     float:left;
 }
 
+#next {
+    background-color: #000;
+    margin: 12px;
+}
+
+#next_label {
+    padding: 5px;
+}
+
 #text {
     width: 120px;
     height: 552px;
